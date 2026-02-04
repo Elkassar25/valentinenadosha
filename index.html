@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine 💖</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background: url("background.jpg") no-repeat center center fixed;
+        background-size: cover;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    /* overlay so text is readable */
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(253, 236, 239, 0.65);
+        z-index: 0;
+    }
+
+    .container {
+        position: relative;
+        z-index: 1;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #c9184a;
+        font-size: 1.6rem;
+        margin-bottom: 30px;
+    }
+
+    button {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+    }
+
+    #yes {
+        background: #ff4d6d;
+        color: white;
+        z-index: 10;
+    }
+
+    #no {
+        background: #adb5bd;
+        color: white;
+        position: absolute;
+    }
+
+    .buttons {
+        position: relative;
+        height: 120px;
+        width: 300px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    input {
+        padding: 12px;
+        font-size: 1rem;
+        border-radius: 15px;
+        border: 1px solid #ccc;
+        width: 80%;
+        margin-top: 15px;
+    }
+
+    /* confetti */
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        top: -10px;
+        animation: fall 3s linear forwards;
+        z-index: 999;
+    }
+
+    @keyframes fall {
+        to {
+            transform: translateY(110vh) rotate(720deg);
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container" id="main">
+    <h1>
+        Honey Nadosha ELfarfosha 💕<br>
+        Would you go out with me?
+    </h1>
+
+    <div class="buttons">
+        <button id="yes">Mwaf2a 💘</button>
+        <button id="no">Mash 3arfa 💔</button>
+    </div>
+</div>
+
+<div class="container hidden" id="accepted">
+    <h1>YEAAYY 💖<br>I WAS SURE YOU WILL ACCEPT</h1>
+    <p style="color:#6a040f; font-size:1.1rem;">
+        Where would you like to go? ✨
+    </p>
+    <input id="placeInput" type="text" placeholder="Tell me 😍">
+    <button id="savePlace" style="margin-top:15px;">Save 💕</button>
+    <p id="savedText" style="margin-top:20px; font-size:1.2rem; color:#c9184a;"></p>
+</div>
+
+<!-- AUDIO -->
+<audio id="yesSound">
+    <source src="yes-sound.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const main = document.getElementById("main");
+    const accepted = document.getElementById("accepted");
+    const yesSound = document.getElementById("yesSound");
+    const placeInput = document.getElementById("placeInput");
+    const savePlaceBtn = document.getElementById("savePlace");
+    const savedText = document.getElementById("savedText");
+
+    // -------- SAFARI AUDIO UNLOCK --------
+    let audioUnlocked = false;
+    document.addEventListener("touchstart", () => {
+        if (!audioUnlocked) {
+            yesSound.play().then(() => {
+                yesSound.pause();
+                yesSound.currentTime = 0;
+                audioUnlocked = true;
+            }).catch(() => {});
+        }
+    }, { once: true });
+
+    // -------- NO BUTTON FAST ESCAPE --------
+    function moveNoFast() {
+        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+    }
+    moveNoFast();
+    setInterval(moveNoFast, 350); // يتحرك لوحده بسرعة
+
+    
+
+    // -------- CONFETTI --------
+    function launchConfetti() {
+        for (let i = 0; i < 80; i++) {
+            const confetti = document.createElement("div");
+            confetti.className = "confetti";
+            confetti.style.left = Math.random() * 100 + "vw";
+            confetti.style.backgroundColor =
+                ["#ff4d6d", "#ffd166", "#06d6a0", "#118ab2"][Math.floor(Math.random()*4)];
+            confetti.style.animationDuration = (2 + Math.random()*2) + "s";
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 4000);
+        }
+    }
+
+    // -------- YES BUTTON --------
+    yesBtn.addEventListener("click", () => {
+        yesSound.currentTime = 0;
+        yesSound.play();
+        launchConfetti();
+
+        main.classList.add("hidden");
+        accepted.classList.remove("hidden");
+    });
+
+    // -------- SAVE ANSWER --------
+    savePlaceBtn.addEventListener("click", () => {
+        const place = placeInput.value;
+        if (place.trim() !== "") {
+            localStorage.setItem("valentinePlace", place);
+            savedText.textContent = "Eshtaa Ya nadoshaa 💕 We’re going to: " + place;
+        }
+    });
+
+    // Load saved answer
+    
+</script>
+
+</body>
+</html>
